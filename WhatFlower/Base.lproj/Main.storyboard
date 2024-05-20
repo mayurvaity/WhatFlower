@@ -16,13 +16,28 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hXn-ww-O4T">
-                                <rect key="frame" x="-12" y="103" width="405" height="749"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hXn-ww-O4T">
+                                <rect key="frame" x="0.0" y="103" width="393" height="749"/>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kzb-hc-4hJ">
+                                <rect key="frame" x="226" y="306" width="81" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <color key="textColor" red="0.65882354970000001" green="0.97254902119999997" blue="0.30196079609999998" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Kzb-hc-4hJ" secondAttribute="bottom" constant="491" id="GB8-wt-0fh"/>
+                            <constraint firstItem="Kzb-hc-4hJ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="265" id="Lvy-GA-mbq"/>
+                            <constraint firstItem="hXn-ww-O4T" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="SO1-KL-yFv"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Kzb-hc-4hJ" secondAttribute="trailing" constant="86" id="bgy-98-n6K"/>
+                            <constraint firstItem="Kzb-hc-4hJ" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="203" id="dhV-y9-pO0"/>
+                            <constraint firstItem="hXn-ww-O4T" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="rQq-0g-Hsy"/>
+                            <constraint firstItem="hXn-ww-O4T" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="tx3-y7-lBu"/>
+                            <constraint firstAttribute="bottom" secondItem="hXn-ww-O4T" secondAttribute="bottom" id="whR-yH-AW3"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="fD9-cm-FfI">
                         <barButtonItem key="rightBarButtonItem" systemItem="camera" id="hLC-bJ-apb">
@@ -33,6 +48,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="imageView" destination="hXn-ww-O4T" id="3zb-dG-brT"/>
+                        <outlet property="pageIDLabel" destination="Kzb-hc-4hJ" id="dwp-7D-Cb2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
