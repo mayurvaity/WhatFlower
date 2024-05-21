@@ -13,15 +13,16 @@ import SwiftyJSON
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
+    //base API link (w/o parameters)
+    let wikiPediaURL = "https://en.wikipedia.org/w/api.php"
+    
     @IBOutlet weak var imageView: UIImageView!
     
-    @IBOutlet weak var pageIDLabel: UILabel!
+    @IBOutlet weak var label: UILabel!
     
     //creating image picker obj
     let imagePicker = UIImagePickerController()
     
-    //creating obj of model
-    var wikiManager = WikiManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,7 +38,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         //to allow editing of the captured photo, cropping in this case
         imagePicker.allowsEditing = true
         
-        wikiManager.delegate = self
     }
     
     //it is a delegate method, get called once image picker UIVC finishes getting a pic
@@ -45,7 +45,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         //one of the parameters info keeps data (including image taken), by specifying key we can get image
         // parameter info is a dictionary
         //using if-let to optional check image
-//        if let userPickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
+        //        if let userPickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
         // to use edited image
         if let userPickedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
             //assigning this image to ImageVw
@@ -75,15 +75,16 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 fatalError("Model failed to process image.")
             }
             
-//            print(result)
-            
+            //            print(result)
+            //getting 1st value from results of ML model
             if let firstResult = result.first {
-                
+                //getting identifier from 1st value from results, then capitalizing it
                 let flowerName = firstResult.identifier.capitalized
+                //updating above value in title of navigation bar
                 self.navigationItem.title = flowerName
                 
-                //calling getURL method
-                self.wikiManager.getFinalURL(flowerName: flowerName)
+                //calling method which fetches data from API using flowerName (parameter)
+                self.requestInfo(flowerName: flowerName)
             }
             
         }
@@ -99,6 +100,39 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
     }
     
+    //method used to fetch data from API
+    func requestInfo(flowerName: String) {
+        
+        //list of parameters used in API link
+        var parameters: [String : String] = ["format": "json",
+                                             "action" : "query",
+                                             "titles" : flowerName,
+                                             "exintro" : "",
+                                             "prop" : "extracts",
+                                             "explaintext" : "",
+                                             "indexpageids" : "",
+                                             "redirects" : "1"]
+        
+        //calling API with URL and parameters
+        Alamofire.request(wikiPediaURL, method: .get, parameters: parameters).responseJSON { response in
+            //if respose of above call is a success
+            if response.result.isSuccess {
+                //getting response for further processing
+                print("Got the WikiPedia data.")
+                print(response)
+                
+                //converting response in JSON format
+                let flowerJSON: JSON = JSON(response.result.value!)
+                //getting pageid from JSON
+                //.stringValue to convert it into string format
+                let pageid = flowerJSON["query"]["pageids"][0].stringValue
+                //getting flower description from JSON
+                let flowerDescription = flowerJSON["query"]["pages"][pageid]["extract"].stringValue
+                //assigning flower 
+                self.label.text = flowerDescription
+            }
+        }
+    }
     
     @IBAction func cameraButtonTapped(_ sender: UIBarButtonItem) {
         //to call imagePicker uiviewcontroller
@@ -107,15 +141,3 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
 }
 
-extension ViewController: WikiManagerDelegate {
-    func didUpdateWiki(_ wikiManager: WikiManager, wiki: WikiModel) {
-        print("wiki.pageid: \(wiki.pageid)")
-        DispatchQueue.main.async {
-            self.navigationItem.title = wiki.pageid
-        }
-    }
-    
-    func didFailWithError(error: any Error) {
-        print(error)
-    }
-}
