@@ -10,6 +10,7 @@ import CoreML
 import Vision
 import Alamofire
 import SwiftyJSON
+import SDWebImage
 
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -49,7 +50,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         // to use edited image
         if let userPickedImage = info[UIImagePickerController.InfoKey.editedImage] as? UIImage {
             //assigning this image to ImageVw
-            imageView.image = userPickedImage
+//            imageView.image = userPickedImage
             
             guard let ciimage = CIImage(image: userPickedImage) else {
                 fatalError("Failed while converting to CIImage.")
@@ -108,10 +109,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                                              "action" : "query",
                                              "titles" : flowerName,
                                              "exintro" : "",
-                                             "prop" : "extracts",
+                                             "prop" : "extracts|pageimages",
                                              "explaintext" : "",
                                              "indexpageids" : "",
-                                             "redirects" : "1"]
+                                             "redirects" : "1",
+                                             "pithumbsize" : "500"
+        ]
         
         //calling API with URL and parameters
         Alamofire.request(wikiPediaURL, method: .get, parameters: parameters).responseJSON { response in
@@ -130,6 +133,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 let flowerDescription = flowerJSON["query"]["pages"][pageid]["extract"].stringValue
                 //assigning flower 
                 self.label.text = flowerDescription
+                
+                //get flower image from wikipedia
+                let flowerImageURL = flowerJSON["query"]["pages"][pageid]["thumbnail"]["source"].stringValue
+                //getting image from URL and setting to imageView 
+                self.imageView.sd_setImage(with: URL(string: flowerImageURL))
             }
         }
     }
